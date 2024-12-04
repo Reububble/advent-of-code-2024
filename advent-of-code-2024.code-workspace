@@ -1,0 +1,39 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {},
+  "launch": {
+    "version": "0.2.0",
+    "inputs": [
+      {
+        "description": "which day",
+        "id": "day",
+        "type": "promptString",
+      },
+      {
+        "description": "which stage",
+        "id": "stage",
+        "type": "promptString",
+      }
+    ],
+    "configurations": [
+      {
+        "request": "launch",
+        "name": "Host",
+        "type": "node",
+        "program": "${workspaceFolder}/day_${input:day}/stage_${input:stage}.ts",
+        "cwd": "${workspaceFolder}",
+        "runtimeExecutable": "deno",
+        "runtimeArgs": [
+          "run",
+        ],
+        "envFile": "${workspaceFolder}/.env",
+        "attachSimplePort": 0,
+        "outputCapture": "std"
+      },
+    ]
+  }
+}
