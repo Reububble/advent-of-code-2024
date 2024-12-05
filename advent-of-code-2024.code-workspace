@@ -4,7 +4,9 @@
       "path": "."
     }
   ],
-  "settings": {},
+  "settings": {
+    "terminal.integrated.focusAfterRun": "terminal"
+  },
   "launch": {
     "version": "0.2.0",
     "inputs": [
