@@ -32,7 +32,7 @@
         ],
         "envFile": "${workspaceFolder}/.env",
         "attachSimplePort": 0,
-        "outputCapture": "std"
+        "console": "integratedTerminal"
       },
     ]
   }

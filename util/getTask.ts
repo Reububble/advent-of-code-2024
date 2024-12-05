@@ -34,8 +34,11 @@ export async function getTask(day: string, stage: string) {
   return {
     input,
     output: async (answer: string) => {
-      console.log("Answer:", answer);
-      await fetch(`${dayURL}/answer`, {
+      console.log(`Answer: ${answer}`);
+      if (Deno.stdin.isTerminal() && !confirm()) {
+        return;
+      }
+      const response = await fetch(`${dayURL}/answer`, {
         method: "POST",
         body: `level=${stage}&answer=${answer}`,
         headers,
