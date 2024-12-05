@@ -16,6 +16,7 @@ export async function getTask(day: string, stage: string) {
 
   const headers = new Headers();
   headers.set("Cookie", `session=${cookieValue}`);
+  headers.set("User-Agent", "https://github.com/Reububble/advent-of-code-2024");
 
   const input = await Deno.readTextFile(inputFile).catch(async () => {
     console.log("downloading input");
