@@ -33,6 +33,10 @@
           "run",
         ],
         "envFile": "${workspaceFolder}/.env",
+        "env": {
+          "DAY": "${input:day}",
+          "STAGE": "${input:stage}"
+        },
         "attachSimplePort": 0,
         "console": "integratedTerminal"
       },
