@@ -18,10 +18,10 @@ export async function getTask(day: string, stage: string) {
   headers.set("Cookie", `session=${cookieValue}`);
   headers.set("User-Agent", "https://github.com/Reububble/advent-of-code-2024");
 
-  const delay = Date.UTC(2024, 11, parseInt(day), 21) - Date.now();
+  const delay = Date.UTC(2024, 11, parseInt(day), 5) - Date.now();
   if (delay > 0) {
     while (true) {
-      const remaining = Date.UTC(2024, 11, parseInt(day), 21) - Date.now();
+      const remaining = Date.UTC(2024, 11, parseInt(day), 5) - Date.now();
       if (remaining <= 0) {
         break;
       }
