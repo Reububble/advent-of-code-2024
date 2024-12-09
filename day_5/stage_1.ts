@@ -1,4 +1,5 @@
 import { getTask } from "util/getTask.ts";
+import { getOrSet } from "util/getOrSet.ts";
 
 if (import.meta.main) {
   const task = await getTask("5", "1");
@@ -43,9 +44,7 @@ export function getOrders(section1: string[]) {
   const orders = new Map<string, string[]>();
   section1.forEach((line) => {
     const ordering = line.split("|") as [string, string];
-    const before = orders.get(ordering[1]) ?? [];
-    orders.set(ordering[1], before);
-    before.push(ordering[0]);
+    getOrSet(orders, ordering[1], []).push(ordering[0]);
   });
   return orders;
 }

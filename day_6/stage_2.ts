@@ -1,5 +1,6 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { Direction, findGuard, nextPos, outsideMap } from "day_6/stage_1.ts";
+import { getOrSet } from "util/getOrSet.ts";
 
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
@@ -30,9 +31,7 @@ if (import.meta.main) {
 
     pos.x = next.x;
     pos.y = next.y;
-    const row = visited.get(next.y) ?? new Set();
-    row.add(next.x);
-    visited.set(next.y, row);
+    getOrSet(visited, next.y, new Set()).add(next.x);
   }
 
   await task.output(String(ret));
@@ -55,13 +54,11 @@ function isLoop(pos: { x: number; y: number }, dir: Direction, map: string[]) {
 
     pos.x = next.x;
     pos.y = next.y;
-    const row = visited.get(pos.y) ?? new Map<number, Set<Direction>>();
-    const cell = row.get(pos.x) ?? new Set<Direction>();
+    const row = getOrSet(visited, pos.y, new Map<number, Set<Direction>>());
+    const cell = getOrSet(row, pos.x, new Set<Direction>());
     if (cell.has(dir)) {
       return true;
     }
     cell.add(dir);
-    row.set(pos.x, cell);
-    visited.set(pos.y, row);
   }
 }

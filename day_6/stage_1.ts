@@ -1,4 +1,5 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
+import { getOrSet } from "util/getOrSet.ts";
 
 export enum Direction {
   up,
@@ -29,9 +30,7 @@ if (import.meta.main) {
 
     pos.x = next.x;
     pos.y = next.y;
-    const row = visited.get(pos.y) ?? new Set();
-    row.add(pos.x);
-    visited.set(pos.y, row);
+    getOrSet(visited, pos.y, new Set()).add(pos.x);
   }
 
   for (const row of visited.values()) {

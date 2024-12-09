@@ -2,6 +2,7 @@ import { getTask, requiredEnv } from "util/getTask.ts";
 import { outsideMap } from "day_6/stage_1.ts";
 import { eachGrid } from "util/eachGrid.ts";
 import { eachPair } from "util/eachPair.ts";
+import { getOrSet } from "util/getOrSet.ts";
 
 export type Pos = {
   x: number;
@@ -21,15 +22,7 @@ if (import.meta.main) {
   const lines = task.input.split(/\r?\n/).slice(0, -1);
   const locations = new Map<number, Set<number>>();
 
-  const antennas = new Map<string, Pos[]>();
-
-  eachGrid(lines, (char, x, y) => {
-    if (char !== ".") {
-      const nodes = antennas.get(char) ?? new Array<Pos>();
-      nodes.push({ x, y });
-      antennas.set(char, nodes);
-    }
-  });
+  const antennas = findAntennas(lines);
 
   for (const positions of antennas.values()) {
     eachPair(positions, (a, b) => {
@@ -51,4 +44,16 @@ if (import.meta.main) {
   }
 
   await task.output(String(ret));
+}
+
+export function findAntennas(lines: string[]) {
+  const antennas = new Map<string, Pos[]>();
+
+  eachGrid(lines, (char, x, y) => {
+    if (char !== ".") {
+      const nodes = getOrSet(antennas, char, new Array<Pos>());
+      nodes.push({ x, y });
+    }
+  });
+  return antennas;
 }
