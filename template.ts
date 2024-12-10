@@ -7,6 +7,8 @@ if (import.meta.main) {
 
   let ret = 0;
   const lines = task.input.split(/\r?\n/).slice(0, -1);
+  const digits = lines.map((line) => [...line.matchAll(/\d/g)].map(([n]) => Number(n)));
+  const numbers = lines.map((line) => [...line.matchAll(/\d+/g)].map(([n]) => Number(n)));
 
   await task.output(String(ret));
 }
