@@ -1,5 +1,6 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { getOrSet } from "util/getOrSet.ts";
+import { Indexable } from "util/eachGrid.ts";
 
 export enum Direction {
   up,
@@ -68,6 +69,6 @@ export function nextPos({ x, y }: { x: number; y: number }, dir: Direction) {
   return { x, y };
 }
 
-export function outsideMap(next: { x: number; y: number }, map: string[]) {
+export function outsideMap<T>(next: { x: number; y: number }, map: Indexable<T>[]) {
   return next.x < 0 || next.y < 0 || next.x >= map[0].length || next.y >= map.length;
 }
