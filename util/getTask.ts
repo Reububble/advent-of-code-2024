@@ -20,13 +20,16 @@ export async function getTask(day: string, stage: string) {
 
   const delay = Date.UTC(2024, 11, parseInt(day), 5) - Date.now();
   if (delay > 0) {
+    console.log("Must wait", Math.round(delay / 1000), "seconds");
     while (true) {
       const remaining = Date.UTC(2024, 11, parseInt(day), 5) - Date.now();
       if (remaining <= 0) {
         break;
       }
-      console.log("Waiting", Math.round(remaining / 1000), "seconds");
-      const delay = remaining % 1000;
+      const seconds = Math.round(remaining / 1000);
+      console.log("Waiting", seconds, "seconds");
+      const pow10 = 10 ** Math.max(0, Math.floor(Math.log10(remaining - 0.1)));
+      const delay = (remaining % pow10) || pow10;
       await new Promise((r) => setTimeout(r, delay));
     }
     console.log(await downloadInput(dayURL, headers, inputFile));
