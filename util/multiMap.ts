@@ -58,7 +58,10 @@ export class MultiMap<Keys extends any[], Value> extends Map<Keys, Value> {
   override *entries(): MapIterator<[Keys, Value]> {
     function* entriesDepth(map: Map<any, any>, depth: number): MapIterator<[any[], Value]> {
       if (depth === 0) {
-        yield* map.entries();
+        for (const v of map.values()) {
+          yield [[], v];
+        }
+        return;
       }
       for (const [key, inner] of map) {
         for (const [keys, value] of entriesDepth(inner, depth - 1)) {
