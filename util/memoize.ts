@@ -1,6 +1,6 @@
 import { MultiMap } from "util/multiMap.ts";
 
-export function cache<Args extends unknown[], Ret>(
+export function memoize<Args extends unknown[], Ret>(
   f: (...args: Args) => Ret,
   uniqueness: (...args: Args) => unknown[] = (...v: Args) => v,
 ) {

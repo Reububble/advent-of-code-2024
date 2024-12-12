@@ -1,8 +1,8 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
-import { cache } from "util/cache.ts";
+import { memoize } from "util/memoize.ts";
 import { integerDigits } from "util/integerDigits.ts";
 
-const blink = cache((i: number, stone: number): number => {
+const blink = memoize((i: number, stone: number): number => {
   if (i === 0) {
     return 1;
   }
