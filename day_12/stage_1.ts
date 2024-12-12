@@ -1,8 +1,14 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { eachGrid } from "util/eachGrid.ts";
-import { outsideMap } from "day_6/stage_1.ts";
 import { MultiMap } from "util/multiMap.ts";
 import { Pos } from "day_8/stage_1.ts";
+
+export function getRegionID(regionIndex: number, regionIDs: Array<number>) {
+  while (regionIndex !== regionIDs[regionIndex]) {
+    regionIndex = regionIDs[regionIndex];
+  }
+  return regionIndex;
+}
 
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
@@ -10,74 +16,73 @@ if (import.meta.main) {
   let ret = 0;
   const lines = task.input.split(/\r?\n/).slice(0, -1);
 
-  const regionInfos = new Array<{ positions: Pos[]; perimeter: number }>();
+  const regionInfos = new Array<{ area: number; perimeter: number }>();
   const regionIDs = new Array<number>();
-
-  function getRegionID(regionIndex: number) {
-    while (regionIndex !== regionIDs[regionIndex]) {
-      regionIndex = regionIDs[regionIndex];
-    }
-    return regionIndex;
-  }
 
   const regionIndices = new MultiMap<[number, number], number>(2);
 
   eachGrid(lines, (v, x, y) => {
-    const neighbours = findRegions(v, { x, y });
-    if (neighbours.length === 0) {
-      const regionID = regionInfos.length;
-      regionInfos.push({ positions: [{ x, y }], perimeter: 4 });
-      const regionIndex = regionIDs.length;
-      regionIDs.push(regionID);
-      regionIndices.set([y, x], regionIndex);
-    } else {
-      const neighbouringRegions = new Set(neighbours.map((pos) => getRegionID(regionIndices.get([pos.y, pos.x])!)));
-      if (neighbouringRegions.size === 1) {
-        const regionIndex = regionIndices.get([neighbours[0].y, neighbours[0].x])!;
-        const regionID = getRegionID(regionIndex);
-        const regionInfo = regionInfos[regionID];
-        regionInfo.positions.push({ x, y });
-        regionInfo.perimeter += 4 - 2 * neighbours.length;
-        regionIndices.set([y, x], regionIndex);
-      } else {
-        // combine regions
-        const newRegionInfo = { positions: [{ x, y }], perimeter: 4 - neighbours.length };
-        const newRegionID = regionInfos.length;
-        regionInfos.push(newRegionInfo);
-        const newRegionIndex = regionIDs.length;
-        regionIDs.push(newRegionID);
-        regionIndices.set([y, x], newRegionIndex);
-        for (const regionIndex of neighbouringRegions) {
-          const regionID = getRegionID(regionIndex);
-          const regionInfo = regionInfos[regionID];
-          newRegionInfo.positions.push(...regionInfo.positions);
-          newRegionInfo.perimeter += regionInfo.perimeter - 1;
-          regionIDs[regionIndex] = newRegionID;
-        }
-      }
-    }
+    const regionID = findRegion(v, { x, y }, lines, regionIDs, regionIndices, regionInfos);
+    const region = regionInfos[regionID];
+    region.perimeter += addedPerimeter(lines, y, x, v);
   });
 
-  for (const regionID of new Set(regionIDs.map((regionID) => getRegionID(regionID)))) {
+  for (const regionID of new Set(regionIDs.map((regionID) => getRegionID(regionID, regionIDs)))) {
     const region = regionInfos[regionID];
-    ret += region.perimeter * region.positions.length;
+    ret += region.perimeter * region.area;
   }
 
   await task.output(String(ret));
+}
 
-  function findRegions(v: string, { x, y }: Pos) {
-    const neighbours = new Array<Pos>();
-    for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
-      const neighbour = { x: x + dx, y: y + dy };
-      if (outsideMap(neighbour, lines)) {
-        continue;
-      }
-      if (lines[neighbour.y][neighbour.x] === v) {
-        if (regionIndices.has([neighbour.y, neighbour.x])) {
-          neighbours.push(neighbour);
-        }
-      }
-    }
-    return neighbours;
+function addedPerimeter(lines: string[], y: number, x: number, v: string) {
+  let ret = 0;
+  ret += 4;
+  const left = lines[y][x - 1] === v;
+  const up = lines[y - 1]?.[x] === v;
+  if (left) {
+    ret -= 2;
   }
+  if (up) {
+    ret -= 2;
+  }
+  return ret;
+}
+
+/** Returns the region that the pos belongs to and updates the area. Does not update the perimeter */
+export function findRegion(
+  v: string,
+  { x, y }: Pos,
+  lines: string[],
+  regionIDs: number[],
+  regionIndices: MultiMap<[number, number], number>,
+  regionInfos: { area: number; perimeter: number }[],
+) {
+  const left = lines[y][x - 1] === v;
+  const up = lines[y - 1]?.[x] === v;
+  if (!left && !up) {
+    const newRegionID = regionInfos.push({ area: 1, perimeter: 0 }) - 1;
+    const newRegionIndex = regionIDs.push(newRegionID) - 1;
+    regionIndices.set([y, x], newRegionIndex);
+    return newRegionID;
+  }
+  if (left && up) {
+    const regionAID = getRegionID(regionIndices.get([y, x - 1])!, regionIDs);
+    const regionBID = getRegionID(regionIndices.get([y - 1, x])!, regionIDs);
+    const regionA = regionInfos[regionAID];
+    if (regionAID !== regionBID) {
+      const regionB = regionInfos[regionBID];
+      regionA.area += regionB.area;
+      regionA.perimeter += regionB.perimeter;
+      regionIDs[regionBID] = regionAID;
+    }
+    regionA.area += 1;
+    regionIndices.set([y, x], regionAID);
+    return regionAID;
+  }
+  const regionID = left ? getRegionID(regionIndices.get([y, x - 1])!, regionIDs) : getRegionID(regionIndices.get([y - 1, x])!, regionIDs);
+  const region = regionInfos[regionID];
+  region.area += 1;
+  regionIndices.set([y, x], regionID);
+  return regionID;
 }
