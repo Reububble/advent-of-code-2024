@@ -1,7 +1,5 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 
-const log = console.log;
-
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
 

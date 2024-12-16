@@ -1,6 +1,7 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { getOrSet } from "util/getOrSet.ts";
 import { Indexable } from "util/eachGrid.ts";
+import { findSymbol } from "util/findSymbol.ts";
 
 export enum Direction {
   up,
@@ -42,13 +43,7 @@ if (import.meta.main) {
 }
 
 export function findGuard(map: string[]) {
-  for (let y = 0; y < map.length; ++y) {
-    const x = map[y].indexOf("^");
-    if (x !== -1) {
-      return { x, y };
-    }
-  }
-  throw new Error("No guard");
+  return findSymbol("^", map);
 }
 
 export function nextPos({ x, y }: { x: number; y: number }, dir: Direction) {

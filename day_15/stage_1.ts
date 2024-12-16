@@ -1,6 +1,7 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { Pos } from "day_8/stage_1.ts";
 import { eachGrid } from "util/eachGrid.ts";
+import { findSymbol } from "util/findSymbol.ts";
 
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
@@ -60,12 +61,5 @@ function push(map: string[][], pos: Pos, move: Dir) {
 }
 
 export function findStart(map: string[][]) {
-  for (let y = 0; y < map.length; y++) {
-    const line = map[y];
-    const x = line.indexOf("@");
-    if (x !== -1) {
-      return { x, y };
-    }
-  }
-  throw new Error("Cannot find start");
+  return findSymbol("@", map);
 }
