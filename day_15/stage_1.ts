@@ -29,7 +29,7 @@ if (import.meta.main) {
 
 export type Dir = "v" | "^" | "<" | ">";
 
-function toPos(pos: Pos, move: Dir) {
+export function toPos(pos: Pos, move: Dir) {
   switch (move) {
     case "v":
       return { x: pos.x, y: pos.y + 1 };
