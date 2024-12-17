@@ -48,7 +48,7 @@ export type OpCode = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export function* operate(opcode: OpCode, operand: OpCode, registers: Registers) {
   switch (opcode) {
     case 0:
-      registers.a = registers.a / 2n ** comboValue(operand, registers);
+      registers.a = registers.a >> comboValue(operand, registers);
       break;
     case 1:
       registers.b = registers.b ^ BigInt(operand);
@@ -69,10 +69,10 @@ export function* operate(opcode: OpCode, operand: OpCode, registers: Registers) 
       yield Number(comboValue(operand, registers) % 8n);
       break;
     case 6:
-      registers.b = registers.a / 2n ** comboValue(operand, registers);
+      registers.b = registers.a >> comboValue(operand, registers);
       break;
     case 7:
-      registers.c = registers.a / 2n ** comboValue(operand, registers);
+      registers.c = registers.a >> comboValue(operand, registers);
       break;
   }
 }
