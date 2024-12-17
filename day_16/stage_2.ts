@@ -1,9 +1,9 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { MultiMap } from "util/multiMap.ts";
 import { findBest } from "day_16/stage_1.ts";
-import { findSymbol } from "util/findSymbol.ts";
 import { searchMany } from "util/search.ts";
 import { Dir2, moved, rotated, Vec2 } from "util/positions.ts";
+import { Grid } from "util/eachGrid.ts";
 
 type Node = { pos: Vec2; dir: Dir2; score1: number; prev: Node | undefined };
 
@@ -11,21 +11,21 @@ if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
 
   const lines = task.input.split(/\r?\n/).slice(0, -1);
+  const grid = Grid.create(lines.map((line) => [...line]));
 
-  const endPos = findSymbol("E", lines);
-  const startPos = findSymbol("S", lines);
+  const [startPos, endPos] = grid.findValues(["S", "E"]);
   const startDir = ">";
 
-  const best = findBest(startPos, startDir, endPos, lines)!;
+  const best = findBest(startPos, startDir, endPos, grid)!;
 
   const finishes = searchMany(
     [{ pos: startPos, dir: startDir, score1: 0, prev: undefined }] as Node[],
     { depth: 3, converter: (a) => [a.pos.y, a.pos.x, a.dir] },
     ({ pos, score1 }) => {
-      if (lines[pos.y][pos.x] === "#" || score1 > best) {
+      if (grid.atPos(pos) === "#" || score1 > best) {
         return "Wall";
       }
-      if (lines[pos.y][pos.x] === "E") {
+      if (grid.atPos(pos) === "E") {
         return "Win";
       }
       return "Walk";
