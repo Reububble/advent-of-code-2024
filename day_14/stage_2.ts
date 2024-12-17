@@ -16,15 +16,15 @@ if (import.meta.main) {
   const lowestXVariance = { time: 0, var: varStep[0] };
   const lowestYVariance = { time: 0, var: varStep[1] };
 
-  for (let time = 1; time < 104; ++time) {
+  for (let time = 0; time < 103; ++time) {
     step(robots);
     varStep = variance(robots);
     if (varStep[0] < lowestXVariance.var) {
-      lowestXVariance.time = time;
+      lowestXVariance.time = time + 1;
       lowestXVariance.var = varStep[0];
     }
     if (varStep[1] < lowestYVariance.var) {
-      lowestYVariance.time = time;
+      lowestYVariance.time = time + 1;
       lowestYVariance.var = varStep[1];
     }
   }
