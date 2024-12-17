@@ -60,7 +60,9 @@ export async function getTask(day: string, stage: string) {
         body: `level=${stage}&answer=${answer}`,
         headers,
       });
-      console.log(await response.text());
+      const responseText = await response.text();
+      console.log(responseText.match(/\<main\>(.*?)\<\/main\>/s)![1]);
+      await Deno.writeTextFile("recent.html", responseText);
     },
   };
 }
