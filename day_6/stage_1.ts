@@ -2,13 +2,7 @@ import { getTask, requiredEnv } from "util/getTask.ts";
 import { getOrSet } from "util/getOrSet.ts";
 import { Indexable } from "util/eachGrid.ts";
 import { findSymbol } from "util/findSymbol.ts";
-
-export enum Direction {
-  up,
-  right,
-  down,
-  left,
-}
+import { Dir2, moved, rotated } from "util/positions.ts";
 
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
@@ -17,16 +11,16 @@ if (import.meta.main) {
   const map = task.input.split(/\r?\n/);
 
   const pos = findGuard(map);
-  let dir = Direction.up;
+  let dir = "^" as Dir2;
   const visited = new Map<number, Set<number>>([[pos.y, new Set([pos.x])]]);
 
   while (true) {
-    const next = nextPos(pos, dir);
+    const next = moved(pos, dir);
     if (outsideMap(next, map)) {
       break;
     }
     if (map[next.y][next.x] === "#") {
-      dir = (dir + 1) % 4 as Direction;
+      dir = rotated(dir);
       continue;
     }
 
@@ -44,24 +38,6 @@ if (import.meta.main) {
 
 export function findGuard(map: string[]) {
   return findSymbol("^", map);
-}
-
-export function nextPos({ x, y }: { x: number; y: number }, dir: Direction) {
-  switch (dir) {
-    case Direction.up:
-      --y;
-      break;
-    case Direction.right:
-      ++x;
-      break;
-    case Direction.down:
-      ++y;
-      break;
-    case Direction.left:
-      --x;
-      break;
-  }
-  return { x, y };
 }
 
 export function outsideMap<T>(next: { x: number; y: number }, map: Indexable<T>[]) {

@@ -1,12 +1,11 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
-import { Pos } from "day_8/stage_1.ts";
-import { Direction, nextPos } from "day_6/stage_1.ts";
 import { MultiMap } from "util/multiMap.ts";
 import { findBest } from "day_16/stage_1.ts";
 import { findSymbol } from "util/findSymbol.ts";
 import { searchMany } from "util/search.ts";
+import { Dir2, moved, rotated, Vec2 } from "util/positions.ts";
 
-type Node = { pos: Pos; dir: Direction; score1: number; prev: Node | undefined };
+type Node = { pos: Vec2; dir: Dir2; score1: number; prev: Node | undefined };
 
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
@@ -15,7 +14,7 @@ if (import.meta.main) {
 
   const endPos = findSymbol("E", lines);
   const startPos = findSymbol("S", lines);
-  const startDir = Direction.right as Direction;
+  const startDir = ">";
 
   const best = findBest(startPos, startDir, endPos, lines)!;
 
@@ -33,10 +32,10 @@ if (import.meta.main) {
     },
     ({ score1 }) => score1,
     (exploring) => {
-      const forwardPos = nextPos(exploring.pos, exploring.dir);
+      const forwardPos = moved(exploring.pos, exploring.dir);
       const forward = { pos: forwardPos, dir: exploring.dir, score1: exploring.score1 + 1, prev: exploring };
-      const left = { pos: exploring.pos, dir: (exploring.dir + 3) % 4 as Direction, score1: exploring.score1 + 1000, prev: exploring };
-      const right = { pos: exploring.pos, dir: (exploring.dir + 1) % 4 as Direction, score1: exploring.score1 + 1000, prev: exploring };
+      const left = { pos: exploring.pos, dir: rotated(exploring.dir, -1), score1: exploring.score1 + 1000, prev: exploring };
+      const right = { pos: exploring.pos, dir: rotated(exploring.dir, +1), score1: exploring.score1 + 1000, prev: exploring };
       return [forward, left, right];
     },
   );

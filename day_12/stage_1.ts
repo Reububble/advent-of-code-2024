@@ -1,7 +1,7 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { eachGrid } from "util/eachGrid.ts";
 import { MultiMap } from "util/multiMap.ts";
-import { Pos } from "day_8/stage_1.ts";
+import { Vec2 } from "util/positions.ts";
 
 export function getRegionID(regionIndex: number, regionIDs: Array<number>) {
   while (regionIndex !== regionIDs[regionIndex]) {
@@ -52,7 +52,7 @@ function addedPerimeter(lines: string[], y: number, x: number, v: string) {
 /** Returns the region that the pos belongs to and updates the area. Does not update the perimeter */
 export function findRegion(
   v: string,
-  { x, y }: Pos,
+  { x, y }: Vec2,
   lines: string[],
   regionIDs: number[],
   regionIndices: MultiMap<[number, number], number>,

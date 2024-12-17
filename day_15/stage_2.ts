@@ -1,7 +1,7 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
-import { Pos } from "day_8/stage_1.ts";
 import { eachGrid } from "util/eachGrid.ts";
-import { Dir, findStart, toPos } from "day_15/stage_1.ts";
+import { applyMoves } from "day_15/applyMoves.ts";
+import { Dir2 } from "util/positions.ts";
 
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
@@ -12,16 +12,9 @@ if (import.meta.main) {
   const map = lines.slice(0, empty).map((row) =>
     row.split("").flatMap((v) => v === "#" ? ["#", "#"] : v === "O" ? ["[", "]"] : v === "." ? [".", "."] : ["@", "."])
   );
-  const moves = lines.slice(empty + 1).join("").split("") as Dir[];
+  const moves = lines.slice(empty + 1).join("").split("") as Dir2[];
 
-  let pos = findStart(map);
-
-  for (const move of moves) {
-    if (canPush(map, pos, move)) {
-      push(map, pos, move);
-      pos = toPos(pos, move);
-    }
-  }
+  applyMoves(map, moves);
 
   eachGrid(map, (v, x, y) => {
     if (v === "[") {
@@ -30,48 +23,4 @@ if (import.meta.main) {
   });
 
   await task.output(String(ret));
-}
-
-function canPush(map: string[][], pos: Pos, move: Dir): boolean {
-  const to = toPos(pos, move);
-  switch (map[to.y][to.x]) {
-    case "#":
-      return false;
-    case ".":
-      return true;
-    case "[":
-      if (move === "^" || move === "v") {
-        return canPush(map, to, move) && canPush(map, toPos(to, ">"), move);
-      }
-      return canPush(map, to, move);
-    case "]":
-      if (move === "^" || move === "v") {
-        return canPush(map, to, move) && canPush(map, toPos(to, "<"), move);
-      }
-      return canPush(map, to, move);
-  }
-  throw new Error(`Unknown object ${map[to.y][to.x]}`);
-}
-
-function push(map: string[][], pos: Pos, move: Dir) {
-  const to = toPos(pos, move);
-  switch (map[to.y][to.x]) {
-    case ".":
-      [map[to.y][to.x], map[pos.y][pos.x]] = [map[pos.y][pos.x], map[to.y][to.x]];
-      break;
-    case "[":
-      if (move === "^" || move === "v") {
-        push(map, toPos(to, ">"), move);
-      }
-      push(map, to, move);
-      [map[to.y][to.x], map[pos.y][pos.x]] = [map[pos.y][pos.x], map[to.y][to.x]];
-      break;
-    case "]":
-      if (move === "^" || move === "v") {
-        push(map, toPos(to, "<"), move);
-      }
-      push(map, to, move);
-      [map[to.y][to.x], map[pos.y][pos.x]] = [map[pos.y][pos.x], map[to.y][to.x]];
-      break;
-  }
 }

@@ -1,10 +1,10 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { eachGrid } from "util/eachGrid.ts";
 import { MultiMap } from "util/multiMap.ts";
-import { Pos } from "day_8/stage_1.ts";
 import { findRegion, getRegionID } from "day_12/stage_1.ts";
+import { Vec2 } from "util/positions.ts";
 
-function addedPerimeter({ x, y }: Pos, lines: string[]) {
+function addedPerimeter({ x, y }: Vec2, lines: string[]) {
   const v = lines[y][x];
   const left = lines[y]?.[x - 1] === v;
   const up = lines[y - 1]?.[x] === v;
