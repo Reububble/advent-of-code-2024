@@ -7,7 +7,7 @@ if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
 
   const lines = task.input.split(/\r?\n/).slice(0, -1);
-  const grid = Grid.create(lines.map((line) => [...line]));
+  const grid = Grid.create(lines);
 
   const [startPos, endPos] = grid.findValues(["S", "E"]);
   const startDir = ">";

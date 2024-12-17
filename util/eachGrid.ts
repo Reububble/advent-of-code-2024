@@ -16,8 +16,8 @@ export function eachGrid<T>(grid: Indexable<T>[], apply: (value: T, x: number, y
   }
 }
 
-export class Grid<T> extends Array<Array<T>> {
-  static create<T>(data: T[][]) {
+export class Grid<T> extends Array<Indexable<T>> {
+  static create<T>(data: Indexable<T>[]) {
     const ret = new Grid<T>();
     ret.push(...data);
     return ret;
