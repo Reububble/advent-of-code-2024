@@ -1,12 +1,8 @@
-import { findSymbol } from "util/findSymbol.ts";
 import { Dir2, moved, Vec2 } from "util/positions.ts";
+import { Grid } from "util/eachGrid.ts";
 
-function findStart(map: string[][]) {
-  return findSymbol("@", map);
-}
-
-export function applyMoves(map: string[][], moves: ("^" | ">" | "v" | "<")[]) {
-  let pos = findStart(map);
+export function applyMoves(map: Grid<string>, moves: ("^" | ">" | "v" | "<")[]) {
+  let [pos] = map.findValues(["@"]);
 
   for (const move of moves) {
     const push = canPush(map, pos, move);
@@ -16,14 +12,14 @@ export function applyMoves(map: string[][], moves: ("^" | ">" | "v" | "<")[]) {
     }
   }
 }
-function canPush(map: string[][], pos: Vec2, move: Dir2): { can: false } | { can: true; do: () => void } {
+function canPush(map: Grid<string>, pos: Vec2, move: Dir2): { can: false } | { can: true; do: () => void } {
   const to = moved(pos, move);
-  const here = map[pos.y][pos.x];
-  const adjacent = map[to.y][to.x];
+  const here = map.atPos(pos);
+  const adjacent = map.atPos(to);
   const swap = () => {
     // Make sure this hasn't already been swapped
     if (here === map[pos.y][pos.x]) {
-      [map[to.y][to.x], map[pos.y][pos.x]] = [map[pos.y][pos.x], map[to.y][to.x]];
+      [map[to.y][to.x], map[pos.y][pos.x]] = [here, adjacent];
     }
   };
   switch (adjacent) {

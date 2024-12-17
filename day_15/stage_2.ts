@@ -1,5 +1,5 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
-import { eachGrid } from "util/eachGrid.ts";
+import { eachGrid, Grid } from "util/eachGrid.ts";
 import { applyMoves } from "day_15/applyMoves.ts";
 import { Dir2 } from "util/positions.ts";
 
@@ -9,8 +9,8 @@ if (import.meta.main) {
   let ret = 0;
   const lines = task.input.split(/\r?\n/).slice(0, -1);
   const empty = lines.findIndex((line) => line.length === 0);
-  const map = lines.slice(0, empty).map((row) =>
-    row.split("").flatMap((v) => v === "#" ? ["#", "#"] : v === "O" ? ["[", "]"] : v === "." ? [".", "."] : ["@", "."])
+  const map = Grid.create(
+    lines.slice(0, empty).map((row) => row.split("").flatMap((v) => v === "#" ? ["#", "#"] : v === "O" ? ["[", "]"] : v === "." ? [".", "."] : ["@", "."])),
   );
   const moves = lines.slice(empty + 1).join("").split("") as Dir2[];
 
