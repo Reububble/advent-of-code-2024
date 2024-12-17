@@ -1,7 +1,7 @@
 import { MultiMap } from "util/multiMap.ts";
 import { indexOfValue } from "util/sorted.ts";
 
-export function search<T, const U extends any[]>(
+export function search<T, const U extends unknown[]>(
   initial: T[],
   equivalent: { depth: number; converter: (a: T) => U },
   navigate: (value: T) => "Wall" | "Walk" | "Win",
@@ -36,7 +36,7 @@ export function search<T, const U extends any[]>(
   }
 }
 
-export function searchMany<T, const U extends any[]>(
+export function searchMany<T, const U extends unknown[]>(
   initial: T[],
   equivalent: { depth: number; converter: (a: T) => U },
   navigate: (value: T) => "Wall" | "Walk" | "Win",
