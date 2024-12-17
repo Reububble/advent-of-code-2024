@@ -1,7 +1,4 @@
 export class Vector extends Array<number> {
-  mag2() {
-    return this.dot(this);
-  }
   static create(data: number[]) {
     if (data.length === 0) {
       throw new Error("Vector must have at least one element");
@@ -54,5 +51,11 @@ export class Vector extends Array<number> {
       this[i] /= scalar;
     }
     return this;
+  }
+  mag2() {
+    return this.dot(this);
+  }
+  mag() {
+    return Math.sqrt(this.mag2());
   }
 }
