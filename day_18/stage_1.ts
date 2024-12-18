@@ -3,8 +3,6 @@ import { Grid } from "util/eachGrid.ts";
 import { search } from "util/search.ts";
 import { moved } from "util/positions.ts";
 
-const log = console.log;
-
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
 
@@ -18,7 +16,13 @@ if (import.meta.main) {
     map[numbers[i][1]][numbers[i][0]] = "#";
   }
 
-  ret = search(
+  ret = requiredSteps(map);
+
+  await task.output(String(ret));
+}
+
+export function requiredSteps(map: Grid<string>): number {
+  return search(
     [{ pos: { x: 0, y: 0 }, score: 0 }],
     { depth: 2, converter: ({ pos: { x, y } }) => [x, y] },
     (s) => map.atPos(s.pos) === "." ? s.pos.x === 70 && s.pos.y === 70 ? "Win" : "Walk" : "Wall",
@@ -30,6 +34,4 @@ if (import.meta.main) {
       { pos: moved(s.pos, "v"), score: s.score + 1 },
     ],
   )!.score;
-
-  await task.output(String(ret));
 }
