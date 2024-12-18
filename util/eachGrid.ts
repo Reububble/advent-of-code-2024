@@ -4,6 +4,7 @@ export type Indexable<T> = {
   [x: number]: T;
   length: number;
   indexOf(searchElement: T, fromIndex?: number): number;
+  [Symbol.iterator](): ArrayIterator<T>;
 };
 
 export function eachGrid<T>(grid: Indexable<T>[], apply: (value: T, x: number, y: number) => boolean | void): Vec2 | undefined {

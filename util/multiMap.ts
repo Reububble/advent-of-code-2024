@@ -1,8 +1,15 @@
 import { getOrSet } from "util/getOrSet.ts";
 
-type CacheMap<Args extends any[], Ret> = Args extends [infer A, ...infer Rest] ? Map<A, CacheMap<Rest, Ret>> : Map<null, Ret>;
+type CacheMap<Args extends unknown[], Ret> = Args extends [infer A, ...infer Rest] ? Map<A, CacheMap<Rest, Ret>> : Map<null, Ret>;
 
-export class MultiMap<Keys extends any[], Value> extends Map<Keys, Value> {
+export class MultiMap<Keys extends unknown[], Value> extends Map<Keys, Value> {
+  static create<Keys extends unknown[], Value>(depth: number, entries: [Keys, Value][]) {
+    const ret = new MultiMap(depth);
+    for (const [keys, value] of entries) {
+      ret.set(keys, value);
+    }
+    return ret;
+  }
   constructor(private readonly depth: number) {
     super();
   }
