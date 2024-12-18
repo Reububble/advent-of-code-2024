@@ -1,11 +1,12 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { Grid } from "util/eachGrid.ts";
-import { requiredSteps } from "day_18/stage_1.ts";
+import { path } from "day_18/stage_1.ts";
+import { Vec2 } from "util/positions.ts";
 
 if (import.meta.main) {
   const task = await getTask(requiredEnv("DAY"), requiredEnv("STAGE"));
 
-  let ret: number | undefined = 0;
+  let ret: Vec2[] | undefined = [];
   const lines = task.input.split(/\r?\n/).slice(0, -1);
   const numbers = Grid.create(lines.map((line) => [...line.matchAll(/\d+/g)].map(([n]) => Number(n))));
 
@@ -14,11 +15,14 @@ if (import.meta.main) {
   for (; i < 1024; ++i) {
     map[numbers[i][1]][numbers[i][0]] = "#";
   }
+  ret = path(map);
 
   while (ret !== undefined) {
     ++i;
     map[numbers[i][1]][numbers[i][0]] = "#";
-    ret = requiredSteps(map);
+    if (ret.some(({ x, y }) => x === numbers[i][0] && y === numbers[i][1])) {
+      ret = path(map);
+    }
   }
 
   await task.output(String(numbers[i]));
