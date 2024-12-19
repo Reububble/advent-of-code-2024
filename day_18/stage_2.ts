@@ -15,12 +15,12 @@ if (import.meta.main) {
   }
   --i;
 
-  let ret = path(map);
-  while (ret !== undefined) {
+  let route = path(map);
+  while (route !== undefined) {
     ++i;
     map[numbers[i][1]][numbers[i][0]] = "#";
-    if (ret.some(({ x, y }) => x === numbers[i][0] && y === numbers[i][1])) {
-      ret = path(map);
+    if (route.some(({ x, y }) => x === numbers[i][0] && y === numbers[i][1])) {
+      route = path(map);
     }
   }
 
