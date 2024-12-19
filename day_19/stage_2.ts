@@ -1,20 +1,19 @@
 import { getTask, requiredEnv } from "util/getTask.ts";
 import { memoize } from "util/memoize.ts";
 
-const possible = memoize((patternMap: Map<string, string[]>, design: string): boolean => {
+const alternatives = memoize((patternMap: Map<string, string[]>, design: string): number => {
   const nextChar = design[0];
   if (nextChar === undefined) {
-    return true;
+    return 1;
   }
+  let ret = 0;
   for (const v of patternMap.get(nextChar)!) {
     if (!design.startsWith(v)) {
       continue;
     }
-    if (possible(patternMap, design.slice(v.length))) {
-      return true;
-    }
+    ret += alternatives(patternMap, design.slice(v.length));
   }
-  return false;
+  return ret;
 });
 
 if (import.meta.main) {
@@ -28,9 +27,7 @@ if (import.meta.main) {
   const designs = lines.slice(2);
 
   for (const design of designs) {
-    if (possible(patternMap, design)) {
-      ++ret;
-    }
+    ret += alternatives(patternMap, design);
   }
 
   await task.output(String(ret));
