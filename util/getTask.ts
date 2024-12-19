@@ -48,9 +48,11 @@ export async function getTask(day: string, stage: string) {
     "application/x-www-form-urlencoded",
   );
 
+  const start = Date.now();
   return {
     input,
     output: async (answer: string) => {
+      console.log(`Time: ${Date.now() - start}ms`);
       console.log(`Answer: ${answer}`);
       if (Deno.stdin.isTerminal() && !confirm()) {
         return;
