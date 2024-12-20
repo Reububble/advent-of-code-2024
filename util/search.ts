@@ -63,7 +63,7 @@ export function searchMany<T, const U extends unknown[]>(
     for (const explore of exploration) {
       const keys = equivalent.converter(explore.value);
       const before = explored.get(keys);
-      if (before !== undefined && before < explore.evaluation) {
+      if (before !== undefined && before <= explore.evaluation) {
         continue;
       }
       frontier.push(explore);

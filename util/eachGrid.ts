@@ -48,6 +48,12 @@ export class Grid<T> extends Array<Indexable<T>> {
     return this[pos.y]?.[pos.x];
   }
 
+  setPos(pos: Vec2, value: T) {
+    if (this[pos.y] !== undefined) {
+      this[pos.y][pos.x] = value;
+    }
+  }
+
   eachCell(apply: (value: T, x: number, y: number) => boolean | void) {
     return eachGrid(this, apply);
   }

@@ -12,7 +12,10 @@ export class Tree<Node> {
     return Boolean(predicate.call(thisArg, this.self, this.length - 1)) || (this.parent?.some(predicate, thisArg) ?? false);
   }
   *[Symbol.iterator](): Generator<Node, void, unknown> {
-    yield* this.parent ?? [];
-    yield this.self;
+    const nodes = [this] as Tree<Node>[];
+    while (nodes[0].parent !== undefined) {
+      nodes.unshift(nodes[0].parent);
+    }
+    yield* nodes.map((node) => node.self);
   }
 }
