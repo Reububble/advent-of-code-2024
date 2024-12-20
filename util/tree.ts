@@ -11,11 +11,12 @@ export class Tree<Node> {
   some(predicate: (value: Node, index: number) => unknown, thisArg?: unknown): boolean {
     return Boolean(predicate.call(thisArg, this.self, this.length - 1)) || (this.parent?.some(predicate, thisArg) ?? false);
   }
+  /** yields branch to root */
   *[Symbol.iterator](): Generator<Node, void, unknown> {
-    const nodes = [this] as Tree<Node>[];
-    while (nodes[0].parent !== undefined) {
-      nodes.unshift(nodes[0].parent);
+    let node = this as Tree<Node> | undefined;
+    while (node !== undefined) {
+      yield node.self;
+      node = node.parent;
     }
-    yield* nodes.map((node) => node.self);
   }
 }

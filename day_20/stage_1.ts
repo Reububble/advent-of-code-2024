@@ -21,7 +21,10 @@ export function benefitialCheats(benefit: number, cheat: number, chars: Grid<str
     ...search(
       [{ pos: start, path: new Tree(start) }],
       { depth: 2, converter: ({ pos: { x, y } }) => [x, y] },
-      (v) => chars.atPos(v.pos) === "#" ? "Wall" : chars.atPos(v.pos) === "E" ? "Win" : "Walk",
+      (v) => {
+        const char = chars.atPos(v.pos);
+        return char === "#" ? "Wall" : char === "E" ? "Win" : "Walk";
+      },
       ({ path }) => path.length,
       (v) => [
         walk("<", v),
@@ -30,7 +33,7 @@ export function benefitialCheats(benefit: number, cheat: number, chars: Grid<str
         walk("v", v),
       ],
     )!.path,
-  ];
+  ].reverse();
 
   const distance = Grid.create(new Array(chars.length).fill(undefined).map(() => new Array(chars[0]?.length ?? 0).fill(-1)));
 
