@@ -1,10 +1,10 @@
 import { getOrSet } from "util/getOrSet.ts";
 
-type CacheMap<Args extends unknown[], Ret> = Args extends [infer A, ...infer Rest] ? Map<A, CacheMap<Rest, Ret>> : Map<null, Ret>;
+type CacheMap<Args extends readonly unknown[], Ret> = Args extends [infer A, ...infer Rest] ? Map<A, CacheMap<Rest, Ret>> : Map<null, Ret>;
 
-export class MultiMap<Keys extends unknown[], Value> extends Map<Keys, Value> {
-  static create<Keys extends unknown[], Value>(depth: number, entries: [Keys, Value][]) {
-    const ret = new MultiMap(depth);
+export class MultiMap<Keys extends readonly unknown[], Value> extends Map<Keys, Value> {
+  static create<Keys extends readonly unknown[], Value>(depth: number, entries: Iterable<readonly [Keys, Value]>) {
+    const ret = new MultiMap<Keys, Value>(depth);
     for (const [keys, value] of entries) {
       ret.set(keys, value);
     }
@@ -63,7 +63,7 @@ export class MultiMap<Keys extends unknown[], Value> extends Map<Keys, Value> {
     return depthSize(this.#map, this.depth);
   }
   override *entries(): MapIterator<[Keys, Value]> {
-    function* entriesDepth(map: Map<any, any>, depth: number): MapIterator<[any[], Value]> {
+    function* entriesDepth(map: Map<any, any>, depth: number): MapIterator<[readonly any[], Value]> {
       if (depth === 0) {
         for (const v of map.values()) {
           yield [[], v];
